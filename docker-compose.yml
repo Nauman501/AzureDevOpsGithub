@@ -1,0 +1,154 @@
+version: '3.4'
+
+services:
+  elasticsearch:
+    image: elasticsearch:8.4.2
+    container_name: dev_elasticsearch
+    restart: always
+    ports:
+      - 9200:9200
+      - 9300:9300
+    # user: root  
+    # command:  /bin/bash -c "apt-get update &&  apt-get install nano"  
+    # bash -c "apt-get update || apt-get install nano   &&  apt-get install -y vim nano"
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      - node.name=dev-node-1
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+      - elasticsearchlogs:/usr/share/elasticsearch/logs
+      - elasticsearchconfig:/usr/share/elasticsearch/config  
+
+    # command: 
+    #   - /bin/sh -c "apk add nano"  
+      #- node.name=es01
+      #- elasticsearch_password=P@ssw0rd@1
+    
+      
+      
+    # ulimits:
+    #   memlock:
+    #     soft: -1
+    #     hard: -1
+    #   nofile:
+    #     soft: 65536
+    #     hard: 65536
+    # cap_add:
+    #   - IPC_LOCK      
+      
+    
+      
+    # networks:
+    #   - esnetwork 
+
+  # nano:
+  
+  #   image: ubuntu:18.04
+  #   container_name: nanp_container  
+  #   user: root  
+  #   command:  /bin/bash -c "apt-get update &&  apt-get install nano"  
+
+
+  kibana:
+    image: kibana:8.4.2
+    container_name: dev_kibana
+    restart: always
+    # command: ["/bin/sh", "-c", "apk add nano"]
+    volumes:
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml    
+    environment:
+      # SERVER_NAME: kibana.example.org
+      #- elasticsearch.hosts=http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200      
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=P@ssw0rd@1      
+    ports:
+      - 5601:5601 
+    depends_on:
+      - elasticsearch
+    # networks:
+    #   - esnetwork
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:7.13.0
+    cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
+    cap_drop: ["ALL"]
+    ports:
+    - 8200:8200
+    command: >
+       apm-server -e
+         -E apm-server.rum.enabled=true
+         -E setup.kibana.host=kibana:5601
+         -E setup.template.settings.index.number_of_replicas=0
+         -E apm-server.kibana.enabled=true
+         -E apm-server.kibana.host=kibana:5601
+         -E output.elasticsearch.hosts=["elasticsearch:9200"]    
+volumes:    
+  elasticsearch-data:
+    driver: local
+  elasticsearchlogs:
+    driver: local  
+  elasticsearchconfig:
+    driver: local  
+  
+
+
+  # already commented 
+# networks:
+#     esnetwork:
+#       driver: bridge
+
+    # elasticsearchdata:
+    #    driver: local
+    #    driver_opts:
+    #      type: nfs
+    #      device: ":volumes/elasticsearch/data"
+    #      o: "addr=${NFSSERVER},vers=4,rw"
+    # elasticsearchconfig:
+    #   driver: local
+    #   driver_opts:
+    #     type:  nfs
+    #     device: ":volumes/elasticsearch/config"
+    #     o: "addr=${NFSSERVER},vers=4,rw"
+    # elasticsearchlogs:
+    #   driver: local
+    #   driver_opts:
+    #     type: nfs
+    #     device: ":volumes/elasticsearch/logs"
+    #     o: "addr=${NFSSERVER},vers=4,rw"
+
+  
+  #   networks:
+  #     - esnetwork
+
+# version: '3.4'
+
+# services:
+#   my-elast:
+#     image: docker.elastic.co/elasticsearch/elasticsearch:7.16.3
+#     container_name: elasticsearch
+#     ports:
+#       - 9200:9200
+#       - 9300:9300
+#     volumes:
+#       - elast_data:/usr/share/elasticsearch/data
+#     environment:
+#       - "discovery.type=single-node"
+#     networks:
+#       - esnetwork
+
+# volumes:
+#   elast_data:
+
+#   Kibana:
+#     image: docker.elastic.co/kibana/kibna:7.16.3
+#     container_name: Kibana
+#     ports:
+#       - 5601:5601
+#     volumes:
+#       - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+#     networks:
+#       - esnetwork
+  
+# networks:
+#   esnetwork:

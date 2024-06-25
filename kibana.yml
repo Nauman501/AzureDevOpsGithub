@@ -1,0 +1,48 @@
+server.name: "kibana"
+server.port: 5601
+server.host: "0.0.0.0"
+elasticsearch.hosts: ["http://elasticsearch:9200"]
+
+server.maxPayloadBytes: 8388608
+
+elasticsearch.username: "kibana_system"
+elasticsearch.password: "P@ssw0rd@1"
+elasticsearch.requestTimeout: 132000
+elasticsearch.shardTimeout: 120000
+
+
+
+
+
+
+#curl -X GET "http://192.168.0.17:9200" -u elastic:P@ssw0rd@1
+#kibana.defaultAppId: 'dashboard/<dashboard_id>'
+
+#logging.quiet: true
+#logging.timezone: 'UTC'
+
+
+#xpack.monitoring.enabled: true
+#xpack.monitoring.kibana.collection.enabled: true
+#xpack.monitoring.kibana.collection.interval: 30000
+
+#xpack.monitoring.ui.enabled: true
+#xpack.monitoring.min_interval_seconds: 30
+#xpack.monitoring.ui.container.elasticsearch.enabled: 'false'
+
+#xpack.apm.enabled: true
+#xpack.apm.ui.enabled: true
+
+#xpack.infra.sources.default.logAlias: 'filebeat-*'
+#xpack.infra.sources.default.metricAlias: 'metricbeat-*'
+#xpack.infra.sources.default.fields.timestamp: '@timestamp'
+#xpack.infra.sources.default.fields.message: ['message','@message']
+#xpack.infra.sources.default.fields.tiebreaker: '_doc'
+#xpack.infra.sources.default.fields.host: 'beat.hostname'
+#xpack.infra.sources.default.fields.container: 'docker.container.name'
+#xpack.infra.sources.default.fields.pod: 'kubernetes.pod.name'
+
+#xpack.reporting.encryptionKey: ''
+
+#xpack.spaces.enabled: true
+#xpack.spaces.maxSpaces: 1000
